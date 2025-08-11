@@ -1,6 +1,7 @@
 package com.example
 
 import DAO.*
+import RequestDataClass.AttendanceRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.ws.rs.*
@@ -9,12 +10,12 @@ import javax.ws.rs.core.Response
 import com.fasterxml.jackson.annotation.JsonFormat
 
 // Request DTO using LocalDateTime with format
-data class AttendanceRequest(
-    val empId: String?,
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    val dateTime: LocalDateTime? = null
-)
+//data class AttendanceRequest(
+//    val empId: String?,
+//
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+//    val dateTime: LocalDateTime? = null
+//)
 
 @Path("/attendance")
 @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +45,12 @@ class AttendanceResource(
                 .build()
         }
 
+        if(request.dateTime?.isAfter(LocalDateTime.now()) ?: false){
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                .entity(mapOf("error" to "Check-In date cannot be future"))
+                .build()
+        }
+
         val checkInTime = orNow(request.dateTime)
 
         val attendance = Attendance(empId, checkInTime)
@@ -65,7 +72,7 @@ class AttendanceResource(
         }
     }
 
-    @POST
+    @PUT
     @Path("/checkout")
     fun checkOut(request: AttendanceRequest): Response {
         val empId = request.empId?.trim().orEmpty()

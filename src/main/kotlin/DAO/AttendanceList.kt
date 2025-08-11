@@ -33,14 +33,19 @@ class AttendanceList : ArrayList<Attendance>() {
             return "Already Checked Out!!"
         }
 
+
+
         val attendanceRecord = this.find {
             it.employeeId == empId && it.checkInDateTime.toLocalDate() == date
         }
+        if(checkOutDateTime.isAfter(LocalDateTime.now())||checkOutDateTime.isBefore(attendanceRecord?.checkInDateTime)){
+            return "Check OUT Time cannot be future or Cannot be before the Check In Date Time"
+        }
 
-        val success = attendanceRecord?.checkOut(checkOutDateTime) ?: false
+        val success: Boolean = attendanceRecord?.checkOut(checkOutDateTime) ?: false
 
         return if (success) {
-            "Checked out successfully at $checkOutDateTime. Working hours: ${attendanceRecord?.workingHours}"
+            "Checked out successfully at $checkOutDateTime. \n Working hours: ${attendanceRecord.workingHours}"
         } else {
             "Check-Out failed. Check-Out time must be after Check-In time."
         }
