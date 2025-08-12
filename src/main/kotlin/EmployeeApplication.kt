@@ -1,12 +1,14 @@
 import DAO.AttendanceList
 import DAO.EmployeeList
+import Services.EmployeeService
+import com.example.resources.EmployeeResource
 import configuration.*
 import resource.AttendanceResource
 import io.dropwizard.Application
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import com.fasterxml.jackson.module.kotlin.kotlinModule
-import resource.EmployeeResource
+
 
 class EmployeeApplication: Application<EmployeeConfiguration>() {
     //override fun initialize(bootstrap: Bootstrap<HelloWorldConfiguration>) {}
@@ -18,8 +20,9 @@ class EmployeeApplication: Application<EmployeeConfiguration>() {
 
         // For now, hardcode employee IDs
         //val employeeIds = listOf("EMP001", "EMP002", "EMP003")
+        val EmployeeService= EmployeeService(employeeList)
         val AttendanceResource= AttendanceResource(attendanceList, employeeList)
-        val EmployeeResource= EmployeeResource(employeeList)
+        val EmployeeResource= EmployeeResource(EmployeeService)
         //val resource = HelloWorldResource(configuration.template)
         environment.objectMapper.registerModule(kotlinModule())//what is this
         environment.jersey().register(EmployeeResource)

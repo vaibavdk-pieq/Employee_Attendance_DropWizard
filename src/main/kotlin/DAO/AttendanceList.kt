@@ -67,15 +67,17 @@ class AttendanceList : ArrayList<Attendance>() {
     }
 
     // Summary of total working hours per employee in date range
-    fun summaryOfWorkingHours(fromDate: String, toDate: String): String {
+    // Summary of total working hours per employee in date range
+    fun summaryOfWorkingHours(fromDate: String, toDate: String): List<Map<String, Any>> {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val fromDateTime = LocalDateTime.parse("$fromDate 00:00", formatter)
         val toDateTime = LocalDateTime.parse("$toDate 23:59", formatter)
 
-        if (isEmpty()) return "No attendance records to summarize."
+        if (isEmpty()) return emptyList()
 
         val sortedList = sortedWith(compareBy({ it.employeeId }, { it.checkInDateTime }))
-        val builder = StringBuilder()
+        val summaryList = mutableListOf<Map<String, Any>>()
+
         var currentEmpId: String? = null
         var totalHours = 0.0
 
@@ -86,9 +88,14 @@ class AttendanceList : ArrayList<Attendance>() {
             // Skip records outside range
             if (checkIn.isBefore(fromDateTime) || checkIn.isAfter(toDateTime)) continue
 
-            // New employee → append previous total
+            // New employee → save previous total
             if (currentEmpId != null && currentEmpId != empId) {
-                builder.append("Employee ID: $currentEmpId, Total Working Hours: ${"%.2f".format(totalHours)}\n")
+                summaryList.add(
+                    mapOf(
+                        "employeeId" to currentEmpId,
+                        "totalWorkingHours" to "%.2f".format(totalHours).toDouble()
+                    )
+                )
                 totalHours = 0.0
             }
 
@@ -96,11 +103,17 @@ class AttendanceList : ArrayList<Attendance>() {
             totalHours += record.workingHours ?: 0.0
         }
 
-        // Append last employee's total
+        // Add the last employee's data
         if (currentEmpId != null) {
-            builder.append("Employee ID: $currentEmpId, Total Working Hours: ${"%.2f".format(totalHours)}\n")
+            summaryList.add(
+                mapOf(
+                    "employeeId" to currentEmpId,
+                    "totalWorkingHours" to "%.2f".format(totalHours).toDouble()
+                )
+            )
         }
 
-        return builder.toString().ifEmpty { "No records found in the given date range." }
+        return summaryList
     }
+
 }

@@ -1,40 +1,19 @@
 package DAO
 
-class Employee(
-    firstName: String,
-    lastName: String,
-    role: String,
-    department: String,
-    reportingTo: String
-) {
-    val id: String
-    val firstName: String
-    val lastName: String
-    val role: String
-    val department: String
+import DAO.ENUM.*
+data class Employee(
+    val employeeId: String,
+    val firstName: String,
+    val lastName: String,
+    val role: Roles,
+    val department: Departments,
     val reportingTo: String
-
+) {
     companion object {
-        private var idCounter = 0
-    }
-
-    init {
-        require(firstName.isNotBlank()) { "First name cannot be blank" }
-        require(lastName.isNotBlank()) { "Last name cannot be blank" }
-        require(role.isNotBlank()) { "Role cannot be blank" }
-        require(department.isNotBlank()) { "Department cannot be blank" }
-        require(reportingTo.isNotBlank()) { "ReportingTo cannot be blank" }
-
-        this.firstName = firstName.trim().lowercase()
-        this.lastName = lastName.trim().lowercase()
-        this.role = role.trim().lowercase()
-        this.department = department.trim().lowercase()
-        this.reportingTo = reportingTo.trim().lowercase()
-
-        this.id = "${this.firstName.first()}${this.lastName.first()}${idCounter++}".lowercase()
-    }
-
-    override fun toString(): String {
-        return "| ID: $id | Name: $firstName $lastName | Role: $role | Department: $department | Reporting To: $reportingTo |"
+        private var counter = 1
+        fun generateId(firstName: String, lastName: String): String {
+            val initials = "${firstName.firstOrNull() ?: 'X'}${lastName.firstOrNull() ?: 'X'}"
+            return "${initials.uppercase()}${counter++}"
+        }
     }
 }

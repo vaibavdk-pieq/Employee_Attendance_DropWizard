@@ -8,23 +8,23 @@ class EmployeeList : ArrayList<Employee>() {
     init {
         // Predefined manager-level employees
         val predefined = listOf(
-            Employee("Anita", "Sharma", Departments.HR.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Rahul", "Verma", Departments.IT.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Sanya", "Patel", Departments.MARKETING.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Deepak", "Kumar", Departments.IT.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Priya", "Nair", Departments.IT.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Karan", "Singh", Departments.IT.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Meera", "Raj", Departments.FINANCE.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Arjun", "Das", Departments.SALES.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Riya", "Menon", Departments.HR.name, Roles.TEAM_LEAD.role, "cto"),
-            Employee("Vikram", "Iyer", Departments.IT.name, Roles.TEAM_LEAD.role, "cto")
+            Employee(employeeId = Employee.generateId("Anita", "Sharma"), firstName = "Anita", lastName = "Sharma", department = Departments.HR, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Rahul", "Verma"), firstName = "Rahul", lastName = "Verma", department = Departments.IT, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Sanya", "Patel"), firstName = "Sanya", lastName = "Patel", department = Departments.MARKETING, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Deepak", "Kumar"), firstName = "Deepak", lastName = "Kumar", department = Departments.IT, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Priya", "Nair"), firstName = "Priya", lastName = "Nair", department = Departments.IT, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Karan", "Singh"), firstName = "Karan", lastName = "Singh", department = Departments.IT, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Meera", "Raj"), firstName = "Meera", lastName = "Raj", department = Departments.FINANCE, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Arjun", "Das"), firstName = "Arjun", lastName = "Das", department = Departments.SALES, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Riya", "Menon"), firstName = "Riya", lastName = "Menon", department = Departments.HR, role = Roles.TEAM_LEAD, reportingTo = "cto"),
+            Employee(employeeId = Employee.generateId("Vikram", "Iyer"), firstName = "Vikram", lastName = "Iyer", department = Departments.IT, role = Roles.TEAM_LEAD, reportingTo = "cto")
         )
         super.addAll(predefined)
     }
 
     // Add new employee, prevent duplicates by ID
     override fun add(employee: Employee): Boolean {
-        if (isEmployeeExist(employee.id)) {
+        if (isEmployeeExist(employee.employeeId)) {
             return false
         }
         return super.add(employee)
@@ -32,18 +32,18 @@ class EmployeeList : ArrayList<Employee>() {
 
     // Delete employee by empId
     fun deleteEmployee(empId: String): Boolean {
-        val employeeRecord = this.find { it.id == empId }
+        val employeeRecord = this.find { it.employeeId == empId }
         return if (employeeRecord != null) this.remove(employeeRecord) else false
     }
 
     // Check if employee exists by empId
     fun isEmployeeExist(empId: String): Boolean {
-        return this.any { it.id == empId }
+        return this.any { it.employeeId == empId }
     }
 
-    // Optional: Get employee by ID
+    // Get employee by ID
     fun getEmployeeById(empId: String): Employee? {
-        return this.find { it.id == empId }
+        return this.find { it.employeeId == empId }
     }
 
     override fun toString(): String {
