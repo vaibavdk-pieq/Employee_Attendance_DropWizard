@@ -33,4 +33,5 @@ application {
 tasks.named<JavaExec>("run") {
     // Default program arguments for Dropwizard
     args("server", "src/main/resources/config.yml")
+
 }
